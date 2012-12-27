@@ -1,0 +1,14 @@
+{
+  "name": "borschik-ycssjs",
+  "version": "0.0.1",
+  "dependencies": {
+    "q": "~0.8.11",
+    "inherit": "1.0.x",
+    "borschik": ">= 0.2.4",
+    "q-io": "1.5.x"
+  },
+  "bin": {
+    "y.css.js": "./y.css.js"
+  },
+  "private": true
+}
