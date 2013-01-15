@@ -12,13 +12,17 @@ var ext2tech = {
 }
 
 HTTP.createServer(function (req, res) {
+    res.setHeader('X-Powered-By', 'borschik');
+    res.setHeader('Content-Type', 'text/plain');
+
     var fullpath = PATH.normalize(url_parse(req.url).pathname);
     var tech = ext2tech[PATH.extname(fullpath)];
     if (!tech) {
-        res.writeHead(501, {'Content-Type': 'text/plain'});
+        res.statusCode = 501;
         res.end('Not implemented.');
         return;
     }
+
     var dirname = PATH.dirname(fullpath);
     var filename = PATH.basename(fullpath);
     if (/^_/.test(filename)) {
@@ -26,28 +30,20 @@ HTTP.createServer(function (req, res) {
     }
     QFS.isFile(fullpath).then(function(is_file) {
         if (is_file) {
-            console.log(fullpath);
-            res.writeHead(200, {'Content-Type': tech[1]});
-            res.write('');
-            res.write('');
+            res.setHeader('Content-type', tech[1]);
             BORSCHIK({
                 input: fullpath,
                 output: res,
                 tech: tech[0],
                 minimize: false,
-                freeze: true
-            }).then(function() {
-                res.write('xx');
-                res.end();
-            }, function(e) {
-                res.write('error');
+                freeze: false
+            }).then(null, function(e) {
                 console.log(e);
-                res.end();
+                res.end('error');
             });
         } else {
-            res.writeHead(500, {'Content-Type': 'text/plain'});
-            res.write('Not file');
-            res.end();
+            res.statusCode = 404;
+            res.end('Not file');
         }
     });
 }).listen(8055, '127.0.0.1');
