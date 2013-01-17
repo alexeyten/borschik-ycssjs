@@ -1,6 +1,14 @@
 {
   "name": "borschik-ycssjs",
   "version": "0.0.1",
+  "author": {
+    "name": "Alexey Ten (Lynn)",
+    "email": "alexeyten@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/alexeyten/borschik-ycssjs"
+  },
   "dependencies": {
     "q": "~0.8.12",
     "coa": "~0.3.9",
@@ -19,6 +27,5 @@
   "config": {
     "host": "localhost",
     "port": 8055
-  },
-  "private": true
+  }
 }
