@@ -2,23 +2,23 @@
   "name": "borschik-ycssjs",
   "version": "0.0.1",
   "dependencies": {
-    "coa": "0.3.x",
-    "q": "~0.8.11",
-    "inherit": "1.0.x",
-    "borschik": "git://github.com/veged/borschik.git#ed1d0e40af",
-    "q-io": "1.5.x"
+    "q": "~0.8.12",
+    "coa": "~0.3.9",
+    "borschik": "> 0.2.4",
+    "borschik-tech-ycssjs": "*"
   },
   "bundledDependencies": [
+    "q",
     "coa",
-    "borschik"
+    "borschik",
+    "borschik-tech-ycssjs"
   ],
-  "bin": {
-    "y.css.js": "./y.css.js"
-  },
   "files": [
-    "lib",
-    "server.js",
-    "y.css.js"
+    "server.js"
   ],
+  "config": {
+    "host": "localhost",
+    "port": 8055
+  },
   "private": true
 }

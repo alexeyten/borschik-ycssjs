@@ -2,20 +2,25 @@
 
 var HTTP = require('http');
 var PATH = require('path');
-var QFS = require('q-io/fs');
+var FS = require('fs');
+var URL = require('url');
+
+var Q = require('q');
 var BORSCHIK = require('borschik').api;
-var url_parse = require('url').parse;
 
 var ext2tech = {
-    '.css': ['css-fast', 'text/css'],
-    '.js': ['lib/tech-ycssjs-js', 'application/x-javascript']
+    '.css': ['css', 'text/css'],
+    '.js': ['ycssjs/js', 'application/x-javascript']
 }
+
+var port = (+process.env.npm_package_config_port) || 8055;
+var host = process.env.npm_package_config_host || 'localhost';
 
 HTTP.createServer(function (req, res) {
     res.setHeader('X-Powered-By', 'borschik');
     res.setHeader('Content-Type', 'text/plain');
 
-    var fullpath = PATH.normalize(url_parse(req.url).pathname);
+    var fullpath = PATH.normalize(URL.parse(req.url).pathname);
     var tech = ext2tech[PATH.extname(fullpath)];
     if (!tech) {
         res.statusCode = 501;
@@ -28,8 +33,9 @@ HTTP.createServer(function (req, res) {
     if (/^_/.test(filename)) {
         fullpath = PATH.join(dirname, filename.replace(/^_/, ''));
     }
-    QFS.isFile(fullpath).then(function(is_file) {
-        if (is_file) {
+
+    Q.nfcall(FS.stat, fullpath).then(function(stat) {
+        if (stat.isFile()) {
             res.setHeader('Content-type', tech[1]);
             BORSCHIK({
                 input: fullpath,
@@ -42,8 +48,11 @@ HTTP.createServer(function (req, res) {
                 res.end('error');
             });
         } else {
-            res.statusCode = 404;
+            res.statusCode = 403;
             res.end('Not file');
         }
+    }, function(err) {
+        res.status = 404;
+        res.end('Not Found');
     });
-}).listen(8055, '127.0.0.1');
+}).listen(port, host);
