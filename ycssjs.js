@@ -49,7 +49,7 @@ exports = require('coa').Cmd()
         args.file.forEach(function(file) {
             var tech = ext2tech[PATH.extname(file)];
             if (!tech) {
-                console.log("skip '" + file + '"');
+                console.log("skip '" + file + "'. Unknown tech");
                 return;
             }
             var outname = PATH.dirname(file) + '/_' + PATH.basename(file);
@@ -60,7 +60,7 @@ exports = require('coa').Cmd()
                 minimize: opts.minimize,
                 freeze: opts.freeze
             }).then(null, function(e) {
-                console.log("error '" + file + '"');
+                console.log("error '" + file + "'. Error message: " + e.message);
                 FS.unlink(outname);
             });
         });
