@@ -39,6 +39,10 @@ exports = require('coa').Cmd()
             return stringToBoolean(v, true);
         })
         .end()
+    .opt()
+        .name('tech') .title('Technology')
+        .short('t').long('tech')
+        .end()
     .arg()
         .name('file')
         .title('Files to process')
@@ -47,7 +51,7 @@ exports = require('coa').Cmd()
         .end()
     .act(function(opts, args) {
         args.file.forEach(function(file) {
-            var tech = ext2tech[PATH.extname(file)];
+            var tech = opts.tech || ext2tech[PATH.extname(file)];
             if (!tech) {
                 console.log("skip '" + file + "'. Unknown tech");
                 return;
