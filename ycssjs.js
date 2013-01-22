@@ -26,22 +26,18 @@ exports = require('coa').Cmd()
     .opt()
         .name('freeze').title('Freeze links to static files (default: yes)')
         .short('f').long('freeze')
-        .def(true)
-        .val(function(v) {
-            return stringToBoolean(v, true);
-        })
         .end()
     .opt()
         .name('minimize').title('Minimize resulting content (default: yes)')
         .short('m').long('minimize')
-        .def(true)
-        .val(function(v) {
-            return stringToBoolean(v, true);
-        })
         .end()
     .opt()
         .name('tech') .title('Technology')
         .short('t').long('tech')
+        .end()
+    .opt()
+        .name('base') .title('Base dir')
+        .short('b').long('base')
         .end()
     .arg()
         .name('file')
@@ -50,32 +46,22 @@ exports = require('coa').Cmd()
         .arr()
         .end()
     .act(function(opts, args) {
+        var optsTech = opts.tech;
         args.file.forEach(function(file) {
-            var tech = opts.tech || ext2tech[PATH.extname(file)];
-            if (!tech) {
+            opts.tech = optsTech || ext2tech[PATH.extname(file)];
+            if (!opts.tech) {
                 console.log("skip '" + file + "'. Unknown tech");
                 return;
             }
-            var outname = PATH.dirname(file) + '/_' + PATH.basename(file);
-            BORSCHIK({
-                input: file,
-                output: outname,
-                tech: tech,
-                minimize: opts.minimize,
-                freeze: opts.freeze
-            }).then(null, function(e) {
-                console.log("error '" + file + "'. Error message: " + e.message);
-                FS.unlink(outname);
-            });
+            var outname = opts.output = PATH.dirname(file) + '/_' + PATH.basename(file);
+            opts.input = file;
+            BORSCHIK(opts)
+                .then(null, function(e) {
+                    console.log("error '" + file + "'. Error message: " + e.message);
+                    FS.unlink(outname);
+                });
         });
     });
-
-function stringToBoolean(s, def) {
-    if (typeof s === 'boolean') return s;
-    if (s == 'yes' || s == 'true') return true;
-    if (s == 'no' || s == 'false') return false;
-    return !!def;
-};
 
 if (require.main === module) {
     exports.run();
