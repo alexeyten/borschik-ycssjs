@@ -1,6 +1,6 @@
 {
     "name": "borschik-ycssjs",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "replacement for ycssjs",
     "author": {
         "name": "Alexey Ten (Lynn)",
@@ -16,8 +16,8 @@
     "dependencies": {
         "q": "~0.8.12",
         "coa": "~0.3.9",
-        "borschik": ">= 0.2.5alpha2",
-        "borschik-tech-ycssjs": "*"
+        "borschik": "0.3.x",
+        "borschik-tech-ycssjs": "~0.1.1"
     },
     "bundledDependencies": [
         "q",
